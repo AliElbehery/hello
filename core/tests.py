@@ -1,12 +1,31 @@
-from django.test import TestCase,SimpleTestCase
+from django.test import TestCase
+from django.urls import reverse
+from .models import Post
 
 
 # Create your tests here.
-class SimpleCase(SimpleTestCase):
-    def test_home_states_code(self):
-        respone= self.client.get('/')
-        self.assertEqual(respone.status_code,200)
+class PostModelTest(TestCase):
+    def setUp(self):
+        Post.objects.create(text='just a test')
     
-    def test_about_states_code(self):
-        respone= self.client.get('/about/')
-        self.assertEqual(respone.status_code,200)
+    def test_text_content(self):
+        post = Post.objects.get(id=1)
+        expected_object_name = f'{post.text}'
+        self.assertEqual(expected_object_name, 'just a test')
+
+class HomeTest(TestCase):
+    def setUp(self):
+        Post.objects.create(text='another test')
+    
+    def test_view_url_location(self):
+        resp= self.client.get('/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_view_url_name(self):
+        resp = self.client.get(reverse('home'))
+        self.assertEqual(resp.status_code, 200)
+    
+    def test_view_template(self):
+        resp= self.client.get(reverse('home'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp,'home.html')

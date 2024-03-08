@@ -1,4 +1,11 @@
 {% extends "base.html" %}
 {% block contant %}
 <h1>Home Page</h1>
+<ul>
+    {% for post in all_posts %}
+    <li>
+        {{post.text}}
+    </li>
+{% endfor %}
+</ul>
 {% endblock contant %}
